@@ -10,4 +10,6 @@ load_dotenv(dotenv_path)
 
 class ImportEnvKeyEnum(Enum):
     """ .envファイルのキーを書く """
-    SAMPLE = os.getenv("SAMPLE")
+    ORGANIZATION = os.getenv("ORGANIZATION")
+    PROJECT = os.getenv("PROJECT")
+    Token = os.getenv("Token")
