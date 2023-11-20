@@ -8,6 +8,8 @@ from importenv import ImportEnvKeyEnum
 
 from util.sample import Util
 
+import requests
+
 PYTHON_APP_HOME = os.getenv('PYTHON_APP_HOME')
 LOG_CONFIG_FILE = ['config', 'log_config.json']
 
@@ -20,16 +22,22 @@ logger.setLevel(DEBUG)
 logger.addHandler(handler)
 logger.propagate = False
 
+def getURL(organization:str, project:str) -> str:
+    return f'https://dev.azure.com/{organization}/{project}/_apis/git/repositories?api-version=7.0'
+
 if __name__ == '__main__':
     # 起動引数の取得
     # args = sys.argv
     # args[0]はpythonのファイル名。
     # 実際の引数はargs[1]から。
+
+    result = requests.get(
+        getURL(
+            ImportEnvKeyEnum.ORGANIZATION.value,
+            ImportEnvKeyEnum.PROJECT.value),
+        auth=('git', ImportEnvKeyEnum.Token.value)).json()
     
-    print('Hello Python on Docker!!')
-    logger.info('This is logger message!!')
-
-    # .envの取得
-    print(ImportEnvKeyEnum.SAMPLE.value)
-
-    Util.print()
+    logger.info(result)
+    
+    for repo in result['value']:
+        print(repo['id'])
